@@ -1,6 +1,5 @@
-import { compare } from "bcrypt";
 import { pool } from "../libs/db.js";
-import { hashPassword } from "../libs";
+import { hashPassword, passwordCompare } from "../libs.js";
 
 export const getUser = async (req, res) => {
   try {
@@ -20,7 +19,7 @@ export const getUser = async (req, res) => {
       });
     }
     user.password = undefined;
-    res.status(201).json({
+    res.status(200).json({
       status: "Success",
       user,
     });
@@ -58,7 +57,7 @@ export const updateUser = async (req, res) => {
         values: [firstName, lastName, country, currency, contact, userId],
     });
     userUpdated.rows[0].password = undefined;
-    res.status(201).json({
+    res.status(200).json({
       status: "Success",
       message: "information updated successfully",
       user: userUpdated.rows[0],
@@ -92,7 +91,7 @@ export const changePassword = async (req, res) => {
       });
     }
 
-    if (newPassword !== newPassword){
+    if (newPassword !== confirmPassword){
 
          return res.status(401).json({
         status: "Failed",
@@ -108,12 +107,12 @@ export const changePassword = async (req, res) => {
       });
     }
 
-    const passwordHashed = await hashPassword(password);
+    const passwordHashed = await hashPassword(newPassword);
     await pool.query({
         text: "UPDATE tbluser SET password = $1 WHERE id = $2",
         values: [passwordHashed, userId]
     });
-        res.status(201).json({
+        res.status(200).json({
       status: "Success",
       message: "Password has been changed",
     });
