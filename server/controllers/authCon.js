@@ -1,5 +1,5 @@
 import { pool } from "../libs/db.js";
-import { createJWT, passwordCompare } from "../libs/index.js";
+import { createJWT, passwordCompare, hashPassword } from "../libs/index.js";
 
 
 export const signUpUser = async (req, res)=>{
@@ -26,10 +26,10 @@ export const signUpUser = async (req, res)=>{
             });
         }
 
-        const hashPassword = await hashPassword(password);
+        const passwordHashed = await hashPassword(password);
         const user = await pool.query({
             text: "INSERT INTO tbluser (firstname, email, password) VALUES ($1, $2, $3) RETURNING *",
-            values: [firstName, email, hashPassword] 
+            values: [firstName, email, passwordHashed] 
         });
 
         delete user.rows[0].password;

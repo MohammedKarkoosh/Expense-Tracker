@@ -7,9 +7,9 @@ dotenv.config();
 export const hashPassword = async (userVal) =>{
     
     const salt = await bcrypt.genSalt(10);
-    const hashPassword = await bcrypt.hashPassword(userVal, salt);
+    const passwordHashed = await bcrypt.hash(userVal, salt);
 
-    return hashPassword;
+    return passwordHashed;
 };
 
 export const passwordCompare = async (userPass, passwordFromDb)=>{
