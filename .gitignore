@@ -14,7 +14,7 @@ pids
 *.pid
 *.seed
 *.pid.lock
-
+.SQL
 # Optional npm cache directory
 .npm/
 
