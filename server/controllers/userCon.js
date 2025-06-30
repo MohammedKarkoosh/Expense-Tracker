@@ -1,9 +1,10 @@
 import { pool } from "../libs/db.js";
-import { hashPassword, passwordCompare } from "../libs.js";
+import { hashPassword, passwordCompare} from "../libs/index.js";
+
 
 export const getUser = async (req, res) => {
   try {
-    const { userId } = req.body.user;
+    const { userId } = req.user;
 
     const isUser = await pool.query({
       text: "SELECT * FROM tbluser WHERE id = $1",
@@ -34,7 +35,7 @@ export const getUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
-    const {userId} = req.body.user;
+    const {userId} = req.user;
     const {firstName, lastName, country, currency, contact} = req.body;
 
      const isUser = await pool.query({
@@ -74,8 +75,8 @@ export const updateUser = async (req, res) => {
 export const changePassword = async (req, res) => {
   try {
 
-    const {userId} = req.body.user;
-    const {currPassword, newPassword, confirmPassword} = req.body;
+    const {userId} = req.user;
+    const {currentPassword, newPassword, confirmPassword} = req.body;
 
      const isUser = await pool.query({
       text: "SELECT * FROM tbluser WHERE id = $1",
@@ -98,7 +99,7 @@ export const changePassword = async (req, res) => {
         message: "New Password must match",
       });
     }
-    const isMatch = await passwordCompare(currPassword, user?.password);
+    const isMatch = await passwordCompare(currentPassword, user?.password);
     if (!isMatch){
 
          return res.status(401).json({
